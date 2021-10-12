@@ -11,11 +11,11 @@ static_lib_suffix = 'js'
 shared_module_suffix = 'js'
 exe_suffix = 'js'
 
-[build-in options]
+[built-in options]
 c_args = []
 c_link_args = []
-cpp_args = []
-cpp_link_args = ['-s', 'NODERAWFS=1', '-s', 'ALLOW_MEMORY_GROWTH=1']
+cpp_args = ['-gsource-map']
+cpp_link_args = ['-s', 'NODERAWFS=1', '-s', 'ALLOW_MEMORY_GROWTH=1', '-gsource-map', '-s', 'ASSERTIONS=2', '-s', 'SAFE_HEAP=1', '-s', 'STACK_OVERFLOW_CHECK=1']
 
 [host_machine]
 system = 'emscripten'

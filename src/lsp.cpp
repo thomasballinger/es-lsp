@@ -965,6 +965,7 @@ void lsp::Server::LoadFromWorkspace(const Workspace &Workspace) {
       continue;
 
     const std::string FsPath = Path.path().string().c_str();
+    Log("  parsing sent: {}'\n", FsPath);
     if (FsPath.find("/.") != -1 || FsPath.find("\\."))
       // maybe inside a .git/ directory
       continue;
