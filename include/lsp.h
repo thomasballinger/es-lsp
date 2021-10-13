@@ -113,6 +113,7 @@ private:
   void DidOpen(const json::Value &Id, const json::Value &Value);
   void DidChange(const json::Value &Id, const json::Value &Value);
   void DidClose(const json::Value &Id, const json::Value &Value);
+  void DidSave(const json::Value &Id, const json::Value &Value);
   void Completion(const json::Value &Id, const json::Value &Value);
   void Hover(const json::Value &Id, const json::Value &Value);
   void SemanticTokensFull(const json::Value &Id, const json::Value &Value);
@@ -128,8 +129,9 @@ private:
   std::vector<std::pair<std::string_view, const Entity *>>
   GetAllEntitiesNamed(std::string_view Name);
   // Parses the given lines into semantic tokens.
-  std::string CalculateAndSendSemanticTokens(const File &File, unsigned StartLine,
-                                      unsigned EndLine);
+  std::string CalculateAndSendSemanticTokens(const File &File,
+                                             unsigned StartLine,
+                                             unsigned EndLine);
 
 private:
   // Whether the server is initialized (i.e. received the 'initialize' request).

@@ -165,6 +165,8 @@ void lsp::Server::HandleNotification(std::string Message) {
     return DidChange(Id->value, ParamsVal->value);
   if (*Method == "textDocument/didClose")
     return DidClose(Id->value, ParamsVal->value);
+  if (*Method == "textDocument/didSave")
+    return didSave(Id->value, ParamsVal->value);
   if (*Method == "textDocument/completion")
     return Completion(Id->value, ParamsVal->value);
   if (*Method == "textDocument/hover")
@@ -310,7 +312,7 @@ void lsp::Server::Initialize(const json::Value &Id, const json::Value &Value) {
 {{
     "capabilities":
     {{
-          "textDocumentSync": {{ "openClose": true, "change": 1 }},
+          "textDocumentSync": {{ "openClose": true, "change": 1, "didSave": {{ "includeText": false }} }},
           "workspace": {{ "workspaceFolders": {{ "supported": true, "changeNotifications": true }} }},
           "completionProvider": {{}},
           "hoverProvider": {{}},
@@ -513,6 +515,23 @@ void lsp::Server::DidClose(const json::Value &Id, const json::Value &Value) {
   It->second.Content.clear();
 
   Log(">> 'textDocument/didClose' done!\n");
+}
+
+void lsp::Server::DidSave(const json::Value &Id, const json::Value &Value) {
+  Log(">> Processing 'textDocument/didSave'.\n");
+
+  auto TextDocument = Value.FindMember("textDocument");
+  if (TextDocument == Value.MemberEnd() || !TextDocument->value.IsObject())
+    return SendError(ParseError, "Error parsing 'textDocument' field", Id);
+  auto Path = GetString(TextDocument->value, "uri");
+  if (!Path)
+    return SendError(ParseError, "Error parsing 'uri' field", Id);
+
+  // TODO HACK - this escaping doesn't work on " chars in filenames
+  std::string command = fmt::format("\"node ../server/out/server.js load-errors \"{}\"\"", Path);
+
+  
+  Log(">> 'textDocument/didSave' done!\n");
 }
 
 void lsp::Server::Completion(const json::Value &Id, const json::Value &Value) {
